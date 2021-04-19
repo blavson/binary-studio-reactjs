@@ -1,0 +1,33 @@
+.basket {
+    width :600px;
+    height: 120px;
+    background-color: #64b5f6;
+    border : #1976d2   1px solid;
+    margin : 15px;
+    border-radius: 10px;
+}
+
+.basket-name {
+    color : #e0f2f1;
+    font-size: 25px;
+    font-family: Georgia, 'Times New Roman', 'Times, serif'; 
+    padding-left: 10px;
+}
+
+.basket-capacity {
+    color : #e0f2f1;
+    font-size: 25px;
+}
+
+.basket:hover {
+    cursor: pointer;
+}
+
+.basket_properties {
+    margin-left: 30px;
+    margin-top: 30px;
+}
+
+#cancelButton {
+    margin: 5px 5px;
+}

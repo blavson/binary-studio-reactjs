@@ -2,6 +2,7 @@ import { Component } from "react";
 import M from 'materialize-css'
 import axios from 'axios'
 import BasketListHolder from "./BasketListHolder";
+import './style.css'
 
 class Home extends Component {
 
@@ -50,7 +51,7 @@ class Home extends Component {
             <div className="container">
                 <div className="basket-management">
 
-                    <button className="btn waves-effect waves-light modal-trigger brown lighten-3" href='#modal1' >Add Basket
+                    <button className="btn waves-effect waves-light modal-trigger blue darken-2" href='#modal1' >Add Basket
                         <i className="material-icons">add_shopping_cart</i>
                     </button>
                 </div>
@@ -67,17 +68,18 @@ class Home extends Component {
                                     <input id="capacity" type="text" className="validate" onChange={this.handleCapacityChange }/>
                                     <label htmlFor="capacity">Capacity</label>
                                </div>
-                            <div className="modal-footer">
-                             <input type="submit" className="modal-close waves-effect waves-green btn-flat" value="OK" />
-                            </div>
+                              <div className="modal-footer">
+                                <button  id="cancelButton" className="btn modal-close waves-effect blue lighten-3" >Cancel</button>
+                                <input type="submit" className="btn modal-close waves-effect blue lighten-1" value="Add" />
+                              </div>
                            </div>
                         </form>  
+                       </div>
                      </div>
-                 </div>
 
                  <div className="basket-list">
                      <h2>Some text here </h2>
-                   <BasketListHolder baskets={this.state.basketList} />
+                    <BasketListHolder baskets={this.state.basketList} />
                  </div>
          </div>
         );
