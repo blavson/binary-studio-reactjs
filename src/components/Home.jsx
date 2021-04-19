@@ -1,21 +1,29 @@
 import { Component } from "react";
 import M from 'materialize-css'
 import axios from 'axios'
+import BasketListHolder from "./BasketListHolder";
 
 class Home extends Component {
 
     state = {
         basketName : '',
-        capacity : 0
+        capacity : 0,
+        basketList : []
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         M.AutoInit();
+        const res = await axios.get('http://localhost:5000/baskets');
+        if (res.data.success) {
+            this.setState ({
+                basketList : res.data.baskets
+            });
+        }
     }
 
     handleNameChange = (event)=> {
         this.setState({
-            basketName :  event.target.valule
+            basketName :  event.target.value
         });
     }
 
@@ -26,8 +34,14 @@ class Home extends Component {
     }
 
 
-    createBasket = () => {
-
+    createBasket = async (event) => {
+        event.preventDefault();
+        const res = await axios.post('http://localhost:5000/baskets', { 
+                                                                            name : this.state.basketName,
+                                                                            capacity :  this.state.capacity
+                                                                     });      
+                                                                              
+         console.log(res.data)                                                                                                
     }
 
 
@@ -36,7 +50,7 @@ class Home extends Component {
             <div className="container">
                 <div className="basket-management">
 
-                    <button className="btn waves-effect waves-light modal-trigger green darken-2" href='#modal1' >Add Basket
+                    <button className="btn waves-effect waves-light modal-trigger brown lighten-3" href='#modal1' >Add Basket
                         <i className="material-icons">add_shopping_cart</i>
                     </button>
                 </div>
@@ -53,15 +67,19 @@ class Home extends Component {
                                     <input id="capacity" type="text" className="validate" onChange={this.handleCapacityChange }/>
                                     <label htmlFor="capacity">Capacity</label>
                                </div>
-                            </div>     
+                            <div className="modal-footer">
+                             <input type="submit" className="modal-close waves-effect waves-green btn-flat" value="OK" />
+                            </div>
+                           </div>
                         </form>  
-                    </div>                         
-                    <div className="modal-footer">
-                    <a href="#!" className="modal-close waves-effect waves-green btn-flat">OK</a>
-                    </div>
-                </div>
-                    
-            </div>
+                     </div>
+                 </div>
+
+                 <div className="basket-list">
+                     <h2>Some text here </h2>
+                   <BasketListHolder baskets={this.state.basketList} />
+                 </div>
+         </div>
         );
     }
 }
