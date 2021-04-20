@@ -12,8 +12,9 @@ class Fruit extends Component {
         } else {
             M.toast({html: "Can't delete fruit", classes : 'pink darken-2'})
         }
-
     }
+
+    
     render() {
         return (
            <div className="col s3"> 

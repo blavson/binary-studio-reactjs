@@ -71,11 +71,12 @@ class Home extends Component {
     render() {
         return (
             <div className="container">
-                <div className="basket-management">
-
-                    <button className="btn waves-effect waves-light modal-trigger blue darken-2" href='#modal1' >Add Basket
-                        <i className="material-icons">add_shopping_cart</i>
-                    </button>
+                   <div className="row">
+                       <div className="col s6 offset-s3">
+                        <button id="add-baskets-button" className="btn-large waves-effect waves-light modal-trigger blue darken-2" href='#modal1' >Add Basket
+                            <i className="material-icons">add_shopping_cart</i>
+                        </button>
+                        </div>
                 </div>
 
                 <div id="modal1" className="modal">
