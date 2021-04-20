@@ -12,7 +12,8 @@ class BasketPage extends Component {
         new_name : '',
         weight : 0,
         fruitName : '',
-        aggrWeight : 0
+        aggrWeight : 0, 
+        refresh : false
     }
 
     fetchFruits = async () => {
@@ -47,7 +48,7 @@ class BasketPage extends Component {
       let totalWeight = this.getAggrWeight()
 
       console.log(totalWeight, currentWeight, this.state.basket.capacity)  
-      if ( parseInt(currentWeight) + parseInt(totalWeight) < parseInt(this.state.basket.capacity) ) {
+      if ( parseInt(currentWeight) + parseInt(totalWeight) < parseInt(this.state.basket.capacity) && currentWeight > 0) {
           const basket_id = this.state.basket.id
           const uri = `http://localhost:5000/baskets/${basket_id}`
           const res = await axios.post(uri, {  basket_id : basket_id ,
@@ -56,18 +57,21 @@ class BasketPage extends Component {
                                   })
           if (res.data.success) {
               this.setState ({
-                  weight : 0,
-                  name :''
+                  refresh : true
               })                        
         }
+    } else {
+        M.toast({html: "Summary weight exceeds Basket's capacity", classes : 'pink darken-2'})
     }
 }
 
 async  componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log("prevState", prevState)
-    console.log("this.state", this.state)
-    if ( ( this.state.fruitName !== '' ) && ( parseInt(this.state.weight) !== 0) ) 
+if (this.state.refresh) {
          this.fetchFruits()
+      this.setState({
+          refresh : false 
+      })   
+    }
 
 }
 
@@ -122,7 +126,6 @@ async  componentDidUpdate(prevProps, prevState, snapshot) {
                  </div>
                 </div>
 
-                {/* <h3>{this.getAggrWeight()} / {this.state.capacity}</h3> */}
 
                 <h2 className="basket-ratio center"> {avg} / {this.state.basket.capacity}</h2>
                <div id="modal2" className="modal">

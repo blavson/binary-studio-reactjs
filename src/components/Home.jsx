@@ -9,7 +9,8 @@ class Home extends Component {
     state = {
         basketName : '',
         capacity : 0,
-        basketList : []
+        basketList : [],
+        refresh  : false
     }
 
     fetchBaskets = async() => {
@@ -40,21 +41,29 @@ class Home extends Component {
 
 
     async  componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log("prevState", prevState)
-        console.log("this.state", this.state)
-        if ( ( this.state.basketName !== '' ) && ( parseInt(this.state.capacity) !== 0) ) 
+        if (this.state.refresh) {
             this.fetchBaskets()
-         
-    
+            this.setState({
+                    refresh : false 
+            });
+        }
     }
     
     createBasket = async (event) => {
         event.preventDefault();
-        const res = await axios.post('http://localhost:5000/baskets', { 
+        let res
+        if (this.state.basketName.length > 0 && this.state.capacity > 0) {
+        res = await axios.post('http://localhost:5000/baskets', { 
                                                                             name : this.state.basketName,
                                                                             capacity :  this.state.capacity
-                                                                     });      
-                                                                              
+                                                                     });  
+        if (res.data.success) {                                                             
+            M.toast({html: "Basket added successfully", classes : 'indigo accent-1'})
+             this.setState({
+                 refresh : true
+             })
+            }                   
+        }    
          console.log(res.data)                                                                                                
     }
 
@@ -73,17 +82,23 @@ class Home extends Component {
                     <div className="modal-content">
                         <form onSubmit={this.createBasket}>
                            <div className="row">
-                               <div className="input-field col s6">
-                                  <input placeholder="Basket name here" id="basket_name" type="text" className="validate"  onChange={this.handleNameChange }/>
-                                  <label htmlFor="basket_name">Basket Name</label>
-                                </div>
-                               <div className="input-field col s3">
-                                    <input id="capacity" type="text" className="validate" onChange={this.handleCapacityChange }/>
-                                    <label htmlFor="capacity">Capacity</label>
-                               </div>
-                              <div className="modal-footer">
+                                 <div className="input-field col s6 offset-s3">
+                                    <input placeholder="Basket name here" id="basket_name" type="text" className="validate"  onChange={this.handleNameChange }/>
+                                    <label htmlFor="basket_name">Basket Name</label>
+                                  </div>
+                            </div>
+                            <div className="row"> 
+                                <div className="input-field col s6 offset-s3">
+                                   <input id="capacity" type="text" className="validate" onChange={this.handleCapacityChange }/>
+                                   <label htmlFor="capacity">Capacity</label>
+                                 </div>
+                            </div>
+                            <div className="row"> 
+                            <div className="input-field col s6 offset-s3">
+                              <div className="modal-footer center">
                                 <button  id="cancelButton" className="btn modal-close waves-effect blue lighten-3" >Cancel</button>
                                 <input type="submit" className="btn modal-close waves-effect blue lighten-1" value="Add" />
+                              </div>
                               </div>
                            </div>
                         </form>  

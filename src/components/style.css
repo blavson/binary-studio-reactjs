@@ -33,11 +33,13 @@
 }
 
 .fruit-item {
+    position: relative;
     width: 130px;
     height: 130px;
     border-radius: 7px;
     background-color: #f8bbd0;
-    margin : 10px 10px
+    margin : 10px 10px;
+    z-index: -1;
 }
 #addItemButton  {
     width : 100%;
@@ -52,3 +54,8 @@
     color: #7986cb ;
     font-weight: 500;
 }
+
+#delete-basket:hover {
+    cursor: pointer;
+}
+
