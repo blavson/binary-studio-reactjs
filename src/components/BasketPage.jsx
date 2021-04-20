@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { Component } from 'react';
 import './style.css'
 import M from 'materialize-css'
+import FruitListHolder from './FruitListHolder';
 
 
 class BasketPage extends Component {
@@ -10,45 +11,68 @@ class BasketPage extends Component {
         basket : {},
         new_name : '',
         weight : 0,
-        fruitName : ''
+        fruitName : '',
+        aggrWeight : 0
     }
 
-    componentDidMount = async() =>  {
-        M.AutoInit();
-        const basketId = this.props.match.params.id
-        const resp = await axios.get(`http://localhost:5000/baskets/${basketId}`)
-        console.log(resp)
+    fetchFruits = async () => {
+        const id = this.props.match.params.basket_id
+        const resp = await axios.get(`http://localhost:5000/baskets/${id}`)
         if (resp.data.success) 
           this.setState({
               basket : resp.data.basket[0]
           })
+        }
 
+    componentDidMount = async() =>  {
+        M.AutoInit();
+        this.fetchFruits()
+
+    }
+
+    getAggrWeight = () => {
+        const basket = this.state.basket
+        console.log(this.state.basket)
+        let totalWeight = 0
+        if (basket.fruits.length !== 0) {
+            basket.fruits.forEach(fruit => {
+              totalWeight += fruit.weight
+             })
+        }
+        return totalWeight
     }
 
     addFruit = async() => {
-      const basket = this.state.basket
       const currentWeight = this.state.weight
-      let totalWeight = 0
-      if (basket.fruits.length !== 0) {
-          basket.fruits.forEach(fruit => {
-            totalWeight += fruit.weight
-      })
-    }
+      let totalWeight = this.getAggrWeight()
+
       console.log(totalWeight, currentWeight, this.state.basket.capacity)  
-      if (currentWeight + totalWeight < this.state.basket.capacity) {
-          const id = this.state.basket.id
-          const uri = `http://localhost:5000/baskets/${id}`
-          console.log(uri)
-          const res = await axios.post(uri, {  basket_id : id,
+      if ( parseInt(currentWeight) + parseInt(totalWeight) < parseInt(this.state.basket.capacity) ) {
+          const basket_id = this.state.basket.id
+          const uri = `http://localhost:5000/baskets/${basket_id}`
+          const res = await axios.post(uri, {  basket_id : basket_id ,
                                                weight : this.state.weight,
                                                name : this.state.fruitName   
                                   })
-       
+          if (res.data.success) {
+              this.setState ({
+                  weight : 0,
+                  name :''
+              })                        
         }
+    }
+}
+
+async  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log("prevState", prevState)
+    console.log("this.state", this.state)
+    if ( ( this.state.fruitName !== '' ) && ( parseInt(this.state.weight) !== 0) ) 
+         this.fetchFruits()
+
 }
 
     handleRadioButton = (event) => {
-        const tag = event.target.value
+        const tag = parseInt(event.target.value)
         if (tag === 1)
           this.setState({
                 fruitName : 'Apple'
@@ -76,26 +100,31 @@ class BasketPage extends Component {
     }
 
 
-    render() {
+    render (){
+        let snippet = '';
+        let avg = 0    
+        if (this.state.basket.fruits !== undefined) {
+            snippet =( <FruitListHolder fruits={this.state.basket.fruits} /> ) 
+            avg = this.getAggrWeight()
+        }
         return (
             <div className="container">     
-              <div className="basket_properties">
                   <div className="row">
                     <div className="input-field col s6 offset-s3">
                        <input id="basket_input_name" type="text" className="validate" onChange={this.handleName}/>
                         <label htmlFor="basket_input_name">{this.state.basket.name}</label>
                      </div>
                   </div>
-              </div>
 
-                <div className="row">
-                    <div className="col s6 offset-s3 center">
-                        <button className="btn waves-effect waves-light modal-trigger  pink lighten-2" href='#modal2' >Add Item
-                            <i className="material-icons">add</i>
-                         </button>
-                    </div>
+                  <div className="row">
+                  <div className="col s6 offset-s3">  
+                    <button  className="btn-large waves-effect blue lighten-1" id="updateButton" onClick={this.updateData}>Update</button>
+                 </div>
                 </div>
 
+                {/* <h3>{this.getAggrWeight()} / {this.state.capacity}</h3> */}
+
+                <h2 className="basket-ratio center"> {avg} / {this.state.basket.capacity}</h2>
                <div id="modal2" className="modal">
                     <div className="modal-content">
                       <div className="row">    
@@ -136,7 +165,16 @@ class BasketPage extends Component {
                         <button  className="btn modal-close waves-effect pink lighten-1" onClick={this.addFruit}>Add</button>
                     </div>
 
-               </div>
+               </div>   
+                {snippet}
+
+                <div className="row">
+                    <div className="input-field col s6 offset-s3 center">
+                        <button className="btn-large waves-effect waves-light modal-trigger  pink lighten-2" id="addItemButton" href='#modal2' >Add Fruit Item
+                            <i className="material-icons">add</i>
+                         </button>
+                    </div>
+                </div>
            </div>
         );
     }

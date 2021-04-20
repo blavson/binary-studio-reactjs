@@ -12,14 +12,18 @@ class Home extends Component {
         basketList : []
     }
 
-    async componentDidMount() {
-        M.AutoInit();
+    fetchBaskets = async() => {
         const res = await axios.get('http://localhost:5000/baskets');
         if (res.data.success) {
             this.setState ({
                 basketList : res.data.baskets
             });
         }
+    }
+    async componentDidMount() {
+        M.AutoInit();
+        this.fetchBaskets()
+
     }
 
     handleNameChange = (event)=> {
@@ -35,6 +39,15 @@ class Home extends Component {
     }
 
 
+    async  componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log("prevState", prevState)
+        console.log("this.state", this.state)
+        if ( ( this.state.basketName !== '' ) && ( parseInt(this.state.capacity) !== 0) ) 
+            this.fetchBaskets()
+         
+    
+    }
+    
     createBasket = async (event) => {
         event.preventDefault();
         const res = await axios.post('http://localhost:5000/baskets', { 
@@ -78,7 +91,7 @@ class Home extends Component {
                      </div>
 
                  <div className="basket-list">
-                     <h2>Some text here </h2>
+                     <h2>Basket List</h2>
                     <BasketListHolder baskets={this.state.basketList} />
                  </div>
          </div>

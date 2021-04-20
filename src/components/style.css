@@ -31,3 +31,24 @@
 #cancelButton {
     margin: 5px 5px;
 }
+
+.fruit-item {
+    width: 130px;
+    height: 130px;
+    border-radius: 7px;
+    background-color: #f8bbd0;
+    margin : 10px 10px
+}
+#addItemButton  {
+    width : 100%;
+}
+#updateButton {
+    margin-top :40px;
+    width : 100%;
+}
+
+.basket-ratio {
+    font-size: 30px;
+    color: #7986cb ;
+    font-weight: 500;
+}

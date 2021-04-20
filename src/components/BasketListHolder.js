@@ -12,7 +12,6 @@ class BasketListHolder extends Component {
 
         return (
             <div>
-                BasketHolder
                 {basketmap}
             </div>
         );

@@ -6,7 +6,7 @@ function App() {
   return (
     <Router>
       <Route exact path="/" component={Home} />
-      <Route  path="/baskets/:id" component={BasketPage} />
+      <Route  path="/baskets/:basket_id" component={BasketPage} />
 
     </Router>
   )
